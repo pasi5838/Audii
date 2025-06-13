@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Game Teka-Teki Hewan</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; background: #f0f8ff; }
+    h1 { color: #2e8b57; }
+    .question { font-size: 1.5em; margin: 20px; }
+    .input-container { margin-top: 10px; }
+    input[type="text"] { padding: 10px; width: 60%; font-size: 1em; }
+    button { padding: 10px 20px; font-size: 1em; margin-top: 10px; }
+    .lives { margin: 10px; color: red; font-weight: bold; }
+    .firework { color: orange; font-size: 2em; animation: pop 0.5s ease-out; }
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1.2); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <h1>🐾 Game Teka-Teki Hewan 🐾</h1>
+  <div class="lives">❤️❤️❤️</div>
+  <div class="question" id="question">Memuat soal...</div>
+  <div class="input-container">
+    <input type="text" id="answer" placeholder="Ketik jawabanmu..." autocomplete="off" />
+    <br />
+    <button onclick="checkAnswer()">Jawab</button>
+  </div>
+  <div id="result"></div>
+
+  <script src="soal.js"></script>
+  <script>
+    let current = 0;
+    let lives = 3;
+
+    const qEl = document.getElementById("question");
+    const inputEl = document.getElementById("answer");
+    const resultEl = document.getElementById("result");
+    const livesEl = document.querySelector(".lives");
+
+    function showQuestion() {
+      if (current >= soal.length) {
+        qEl.innerHTML = "🎉 Selamat! Kamu telah menyelesaikan semua soal.";
+        return;
+      }
+      qEl.innerText = soal[current].tanya;
+      inputEl.value = "";
+      resultEl.innerHTML = "";
+    }
+
+    function checkAnswer() {
+      const jawaban = inputEl.value.trim().toLowerCase();
+      const benar = soal[current].jawab.toLowerCase();
+
+      if (jawaban === benar) {
+        resultEl.innerHTML = '<div class="firework">💥 Benar!</div>';
+        current++;
+        setTimeout(showQuestion, 1000);
+      } else {
+        lives--;
+        livesEl.innerHTML = "❤️".repeat(lives);
+        resultEl.innerHTML = "❌ Salah. Coba lagi!";
+        if (lives <= 0) {
+          qEl.innerHTML = "💀 Game Over. Kamu kehabisan nyawa.";
+          inputEl.disabled = true;
+        }
+      }
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
